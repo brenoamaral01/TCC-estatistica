@@ -1,0 +1,2041 @@
+---
+#title: Estudo da adesão a políticas públicas por municípios brasileiros por meio de modelo de regressão bivariado via cópula de Clayton
+format: closeread-html
+cr-style:
+       narrative-font-family: 'calibri'
+       narrative-font-size: '20pt'
+---
+
+```{=html}  
+<style>
+/* --- Configurações gerais --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Merriweather:wght@400;700&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* --- Imagem de fundo FIXA --- */
+body {
+  background-image: url("imagens/fundo5.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 40px !important;
+}
+
+.destaque-texto {
+  font-size: 1.3em !important;  /* 50% maior que o padrão */
+  color: #2a6496;              /* Cor temática */
+  font-weight: bold;
+  text-align: center;
+  margin: 30px 0;
+}
+
+/* --- Container principal --- */
+.cr-page {
+  background-color: transparent !important;
+  min-height: 100vh;
+  padding: 30px !important;
+}
+
+/* --- Container principal (transparente) --- */
+.cr-container {
+  background: transparent !important;
+  margin: 20px auto;
+  max-width: 90%;
+}
+
+/* --- Título principal (transparente) --- */
+.cr-title {
+  background: transparent !important;
+  padding: 15px 0;
+  text-align: center;
+}
+
+/* --- Seções (totalmente transparentes) --- */
+.cr-section {
+  background: transparent !important;
+  padding: 15px 0;
+}
+
+/* --- Conteúdo (transparente com sombra no texto para legibilidade) --- */
+.cr-content {
+  background: transparent !important;
+  padding: 15px;
+  color: #333333 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7), 
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca para contraste */
+}
+
+/* --- Títulos --- */
+.cr-title, h1, h2, h3 {
+  text-align: center;
+  font-family: 'Merriweather', serif;
+  color: #2a6496 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7),
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca */
+  background: transparent !important;
+}
+
+/* --- Elementos em destaque --- */
+[class*="focus-on"] {
+  background-color: rgba(42, 100, 150, 0.15) !important;
+  padding: 10px;
+  border-left: 4px solid #2a6496;
+  font-weight: 700 !important;
+  text-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+/* --- Imagens --- */
+img {
+  border: none !important;          /* Remove totalmente a borda */
+  box-shadow: none !important;      /* Remove sombra */
+  margin: 10px auto;
+  display: block;
+  padding: 0 !important;           /* Remove padding */
+}
+
+/* Remove qualquer borda adicional que o Quarto possa adicionar */
+div.cell-output-display img, 
+.cr-section img, 
+.cr-container img {
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.titulo-texto {
+text-align: center;
+  font-family: 'Merriweather', serif;
+  color: #2a6496 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7),
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca */
+  background: transparent !important;
+}
+
+</style>
+```
+
+```{=html}
+  <div class="pre-title-content" style="text-align: center; margin-bottom: 20px;">
+    <img src="imagens/Logo_UnB.svg" style="width: 150px; margin: 40px auto 30px;">
+    
+    <p style="font-size: 1.1em; font-family: 'Merriweather', serif;
+  color: #2a6496 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7),
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca */">Universidade de Brasília</p>
+               
+    <p style="font-size: 1.1em; font-family: 'Merriweather', serif; 
+  color: #2a6496 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7),
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca */">Departamento de Estatística</p>
+               
+    <p style="font-size: 2.0em; font-family: 'Merriweather', serif;
+  color: #2a6496 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7),
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca */">Estudo da adesão a políticas públicas por municípios brasileiros por meio de modelo de regressão bivariado via cópula de Clayton</p>
+               
+    <p style="font-size: 1.1em; font-family: 'Merriweather', serif;
+  color: #2a6496 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7),
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca */">Aluno: Breno Sanchi Cardoso do Amaral</p>
+               
+    <p style="font-size: 1.1em; font-family: 'Merriweather', serif;
+  color: #2a6496 !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.7),
+               0 0 3px rgba(255,255,255,0.9); /* Sombra branca */">Orientadora: Profa. Juliana Betini Fachini Gomes</p>
+               
+  </div>
+```
+
+:::{.cr-section}
+
+:::{#cr-cria_mapa}
+![](imagens/mapa_biomas_brasil.png)
+:::
+
+:::{#cr-mapa2}
+![](imagens/mapa2.png)
+:::
+
+
+:::{focus-on="cr-cria_mapa" pan-to="0%,0%" scale-by=".8"}
+O Brasil é o 5º maior país do mundo em extensão territorial, com mais de 8,5 milhões de km$^2$, contendo os mais diversos biomas e vegetações
+:::
+
+Sua população engloba desde tribos nativas anteriores à colonização até imigrantes oriundos da Europa, África, Oriente Médio, Extremo Oriente, etc [@cr-mapa2]{pan-to="0%,0%" scale-by=".8"}
+
+:::
+
+
+:::{.cr-section layout="overlay-center"}
+... por ser uma federação altamente descentralizada, onde as esferas subnacionais de governo possuem autonomia para implementar políticas, o caso brasileiro na verdade representa uma importante unidade de análise comparativa. (COÊLHO; CAVALCANTE; TURGEON, 2016).
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+:::{#cr-pnab}
+![](imagens/panfleto_pnab.png)
+:::
+
+::: {#cr-pnab2 style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| Atenção Básica é o conjunto de ações de saúde que envolvem promoção, proteção, prevenção, diagnóstico, tratamento, reabilitação e manutenção da saúde, desenvolvidas por meio de práticas de cuidado integrado e gestão qualificada. (BRASIL, 2017)
+:::
+
+:::{focus-on="cr-pnab" scale-by=".8"}
+| **Política Nacional de Atenção Básica (PNAB)**
+| 
+| Primeira iniciativa nacional específica para Atenção Básica pelo SUS.
+:::
+
+:::{focus-on="cr-pnab2" scale-by="1"}
+| A PNAB propõe-se a estruturar o SUS a partir de uma porta de entrada forte, universal e baseada no território.
+| 
+| Foi implementada no dia 28/03/2006.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+:::{#cr-pse}
+![](imagens/Logo_PSE.png)
+:::
+
+::: {#cr-pse2 style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| O propósito do PSE é contribuir para a formação integral dos estudantes da rede pública de educação básica por meio de ações de prevenção, promoção e atenção à saúde (BRASIL, 2007).
+:::
+
+:::{focus-on="cr-pse" scale-by=".6"}
+| **Programa Saúde na Escola (PSE)**
+| 
+| Uma iniciativa conjunta do Ministério da Saúde e do Misitério da Educação.
+:::
+
+:::{focus-on="cr-pse2" scale-by="1"}
+| Constitui uma estratégia para a integração e a articulação permanente entre as políticas e ações de educação e de saúde, com a participação da comunidade escolar.
+| 
+| Foi implementado no dia 06/12/2007.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-perguntas style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| - Quais características propiciam que municípios adotem (ou não) à política?
+|
+| - A adesão a uma política afeta a probabilidade de o município adotar outra?
+:::
+
+:::{focus-on="cr-perguntas" scale-by="1"}
+Perguntas que almejamos responder:
+:::
+
+:::
+
+
+
+:::{.cr-section layout="center"}
+
+::: {#cr-tecnicas style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| - Análise de sobrevivência;
+|
+| - Ajuste da distribuição de probabilidade;
+|
+| - Ajuste univariado para uma variável explicativa;
+|
+| - Ajuste bivariado via cópula de Clayton.
+:::
+
+:::{focus-on="cr-tecnicas" scale-by="1"}
+Técnicas a serem utilizadas:
+:::
+
+Destaque inicial: [@cr-tecnicas]{pan-to="20%,70%" scale-by="1.5" highlight="1"}
+
+:::
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-sobrev style="font-size: 1.3em; font-family: 'Roboto', sans-serif;"}
+| - É utilizada principalmente em dados da área da saúde, ao estudar o tempo de vida de pacientes. No entanto, essa abordagem também vem sendo usada em outras áreas, como as ciências sociais;
+|
+| - A variável resposta é o **tempo de falha**, que indica o intervalo
+ decorrido para a ocorrência de determinado evento. Neste estudo, o tempo até a adesão à política pública. Ou seja, **falha = adesão**.
+:::
+
+:::{focus-on="cr-sobrev" scale-by="1"}
+Características da **análise de sobrevivência**:
+:::
+
+:::
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-ref_func_sobr}
+![](imagens/curva_km_pnab.png)
+:::
+
+:::{focus-on="cr-ref_func_sobr" scale-by="1.0"}
+| **Curva de sobrevivência $S(t)$**:
+| 
+| Indica a probabilidade de sobrevivência, que é o complementar da probabilidade de falha.
+| $P(sobrevivência) = 1 - P(falha)$
+|
+| Estimador de Kaplan-Meier.
+:::
+
+:::{focus-on="cr-ref_func_sobr" pan-to="-80%,-45%" scale-by="2.3"}
+| **Censura à direita do tipo I**
+| 
+| Tempo 6.122
+| 
+| Dia 31/12/2022
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-texto_metodo style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| - Adaptabilidade a dados longitudinais;
+|
+| - Presença de censuras;
+|
+| - Incorporação de cópulas.
+:::
+
+:::{focus-on="cr-texto_metodo" scale-by="1.2"}
+A escolha desta técnica se deu por estes 3 grandes motivos:
+:::
+
+Natureza da análise de sobrevivência, onde a variável resposta é o tempo até a adesão à política. [@cr-texto_metodo]{pan-to="0%,50%" scale-by="1.4" highlight="1"}
+
+Não despreza municípios que não aderiram. [@cr-texto_metodo]{pan-to="0%,0%" scale-by="1.4" highlight="3"}
+
+Possibilita incorporar mais de uma variável resposta e mensura a dependência entre elas. [@cr-texto_metodo]{pan-to="0%,-50%" scale-by="1.4" highlight="5"}
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-texto_base_dados style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| - Construída em uma parceria entre o Departamento de Estatística (EST), o Instituto de Ciência Política (IPOL) e a Escola Nacional de Administração Pública (ENAP);
+|
+| - Contém apenas municípios com mais de 100 mil habitantes;
+|
+| - Contém apenas políticas que são suscetíveis a serem adotadas por todos os municípios.
+:::
+
+:::{focus-on="cr-texto_base_dados" scale-by="1.0"}
+**Base de dados**
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-texto_tempo style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| - Indica o período **em dias** até a adoção à política pelo município;
+|
+| - A data de referência para o início da contagem é o dia em que a política foi implementada;
+|
+| - Todas as censuras observadas foram **à direita do tipo I**.
+:::
+
+:::{focus-on="cr-texto_tempo" scale-by="1.0"}
+**Variável *tempo***
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-texto_disp_tempo}
+```{r disp_tempo, message=F, warning=F, cache=T}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(survival)
+library(AdequacyModel)
+library(AICcmodavg)
+library(zoo)
+library(readxl)
+library(plotly)
+library(scales)
+library(tidyr)
+
+base_mod = read_excel("C:/Users/breno/Desktop/Material de Faculdade/UnB/Mats UnB/Disciplinas Vigentes UnB/TCC/Apresentacao final/BASE_FINAL.xlsx", 
+                      sheet = "BASE_MOD") |>
+  mutate(#TX_VETO = TX_VETO*100,
+    TX_CONFLITO_MP = TX_CONFLITO_MP*100,
+    TX_PARTC = TX_PARTC*100,
+    TX_SUCESSO = TX_SUCESSO*100,
+    TX_DOMINANCIA = TX_DOMINANCIA*100,
+    TAM_PROP_BASE = TAM_PROP_BASE*100,
+    TX_DISCIP_BASE = TX_DISCIP_BASE*100,
+    TX_PROP_MNST = TX_PROP_MNST*100,
+    POP_PRSD = POP_PRSD*100,
+    DISCR_TX = DISCR_TX*100,
+    ORC_TOTAL_TX = ORC_TOTAL_TX*100
+  )
+names(base_mod)[names(base_mod) == "T_MEDIO_PERMAN_MINISTRO_P_MANDATO"] <- "T_MEDIO_PERMAN_MINISTRO"
+
+
+df_ger = base_mod |> filter(POL_ABV %in% c('pnab', 'pse') )
+df_pnab = base_mod |> filter(POL_ABV == 'pnab')
+df_pse = base_mod |> filter(POL_ABV == 'pse')
+
+# Tempos - gráfico de dispersão ----
+
+library(plotly)
+library(htmlwidgets)
+
+cores <- c('Nenhuma' = '#C0C0C0', 'Ambas' = '#369a21', "Apenas PNAB" = "#2e27b0", "Apenas PSE" = '#FB1808')
+
+df <- df_ger %>%
+  mutate(
+    POL_ABV = case_when(POL_ABV == "pnab" ~ "Apenas PNAB",
+                        POL_ABV == "pse" ~ 'Apenas PSE',
+                        T ~ POL_ABV)
+  )
+
+df_t = df |> dplyr::select(MUNICÍPIO, POL_ABV, t) |> pivot_wider(names_from = POL_ABV, values_from = t) |>
+  rename(t_pol1 = 'Apenas PNAB', t_pol2 = 'Apenas PSE')
+df_delta = df |> dplyr::select(MUNICÍPIO, POL_ABV, ADOPT) |> pivot_wider(names_from = POL_ABV, values_from = ADOPT) |>
+  rename(delta_pol1 = 'Apenas PNAB', delta_pol2 = 'Apenas PSE')
+df_ano = df |> dplyr::select(MUNICÍPIO, POL_ABV, ANO) |> pivot_wider(names_from = POL_ABV, values_from = ANO) |>
+  rename(ano_pol1 = 'Apenas PNAB', ano_pol2 = 'Apenas PSE')
+
+df = df_t |> left_join(df_delta) |> left_join(df_ano) # |> left_join(df_inicio) |> left_join(df_adopt)
+
+df = df |> mutate(delta_pol1 = case_when(delta_pol1 == 0 ~ 'Não adotou',
+                                         T ~ 'Adotou'),
+                  delta_pol2 = case_when(delta_pol2 == 0 ~ 'Não adotou',
+                                         T ~ 'Adotou')) |>
+  mutate(
+    adesao = case_when( (delta_pol1=='Adotou' & delta_pol2=='Adotou') ~ 'Ambas',
+                        (delta_pol1=='Não adotou' & delta_pol2=='Não adotou') ~ 'Nenhuma',
+                        (delta_pol1=='Adotou' & delta_pol2=='Não adotou') ~ 'Apenas PNAB',
+                        TRUE ~ 'Apenas PSE')) |>
+  mutate(adesao = factor(adesao, levels = c('Ambas', 'Apenas PNAB', 'Apenas PSE', 'Nenhuma')))
+
+df <- df %>%
+  left_join(df_pnab %>% select(MUNICÍPIO, SIGUF), 
+            by = "MUNICÍPIO")
+
+df = df |> mutate(label = paste0(MUNICÍPIO, ' - ', SIGUF,
+                                 '\nPNAB: ', format(t_pol1, big.mark = '.', decimal.mark = ','),
+                                 '\nPSE: ', format(t_pol2, big.mark = '.', decimal.mark = ','),
+                                 '\nAdesão: ', adesao) )
+
+
+# Gráfico
+disp_muni <- df %>%
+  plot_ly(
+    x = ~t_pol1,
+    y = ~t_pol2,
+    color = ~adesao,
+    colors = cores,
+    type = "scatter",
+    mode = "markers",
+    marker = list(
+      size = 8,
+      opacity = 0.6,
+      line = list(width = 0.5, color = "white")
+    ),
+    text = ~label,  # Apenas a label, sem X e Y
+    hoverinfo = "text",  # Mostra apenas o texto personalizado
+    hoverlabel = list(
+      bgcolor = "white",
+      font = list(size = 12, color = "black"),
+      bordercolor = "gray"
+    )
+  ) %>%
+  layout(
+    title = list(
+      text = "<b>Distribuição dos municípios por tempos até adoção</b>",
+      font = list(
+        size = 20,
+        family = "Arial, sans-serif",
+        color = "black"
+      ),
+      x = 0.5,  # Centralizado
+      xanchor = "center",
+      y = 0.95,  # Posição vertical
+      yanchor = "top"
+    ),
+    xaxis = list(
+      title = "Tempos - PNAB",
+      tickformat = ",.0f",  # Formato com separador de milhar
+      tickformatstops = list(
+        list(
+          dtickrange = list(NULL, NULL),
+          value = ".,0f"  # Força ponto como separador de milhar
+        )
+      ),
+      separatethousands = TRUE,
+      ticktext = ~sprintf("%.0f", t_pol1),  # Formata com ponto
+      gridcolor = "lightgray",
+      zerolinecolor = "lightgray"
+    ),
+    yaxis = list(
+      title = "Tempos - PSE",
+      tickformat = ",.0f",
+      tickformatstops = list(
+        list(
+          dtickrange = list(NULL, NULL),
+          value = ".,0f"  # Força ponto como separador de milhar
+        )
+      ),
+      separatethousands = TRUE,
+      ticktext = ~sprintf("%.0f", t_pol2),  # Formata com ponto
+      gridcolor = "lightgray",
+      zerolinecolor = "lightgray"
+    ),
+    hovermode = "closest",
+    plot_bgcolor = "white",
+    paper_bgcolor = "white",
+    legend = list(
+      title = list(text = "Adoção à política"),
+      font = list(size = 11),
+      orientation = "h",
+      x = 0.5,
+      y = -0.2,
+      xanchor = "center"
+    ),
+    margin = list(l = 60, r = 40, t = 80, b = 80)  # Aumentei o top margin para acomodar o título
+  )
+
+disp_muni
+```
+:::
+
+:::{focus-on="cr-texto_disp_tempo" scale-by="1.2"}
+| $\rho$ de Pearson para todos os municípios: 38,9\%;
+| 
+| $\rho$ de Pearson para os municípios que adotaram as duas políticas: 29,3\%.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-func_sobr_ambas}
+![](imagens/curvas_km_ambas.png)
+:::
+
+:::{focus-on="cr-func_sobr_ambas" scale-by="1.0"}
+Comparação entre as curvas de sobrevivência estimadas para a PNAB e PSE.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-distr_pnab}
+![](imagens/ajuste_par_pnab.png)
+:::
+
+:::{focus-on="cr-distr_pnab" scale-by="1.0"}
+Ajuste da distribuição de probabilidade para a PNAB:
+:::
+
+
+::: {#cr-distr_pnab_tab}
+**Tabela:** Medidas de informação para cada distribuição com relação à PNAB
+
+| Distribuição | AIC | AICc | BIC |
+|:-------------|:---:|:----:|:---:|
+| Exponencial | 4.880,9 | 4.880,9 | 4.884,7 |
+| **Weibull** | **4.846,4** | **4.846,5** | **4.854,0** |
+| Log-logística | 4.855,4 | 4.855,4 | 4.862,9 |
+| Log-normal | 4.922,2 | 4.922,3 | 4.929,7 |
+:::
+
+:::{focus-on="cr-distr_pnab_tab" scale-by="1.3"}
+Sob os três critérios, a distibuição de melhor ajuste foi a **Weibull**.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-distr_pse}
+![](imagens/ajuste_par_pse.png)
+:::
+
+:::{focus-on="cr-distr_pse" scale-by="1.0"}
+Ajuste da distribuição de probabilidade para o PSE:
+:::
+
+
+::: {#cr-distr_pse_tab}
+**Tabela:** Medidas de informação para cada distribuição com relação ao PSE
+
+| Distribuição | AIC | AICc | BIC |
+|:-------------|:---:|:----:|:---:|
+| Exponencial | 5.002,5 | 5.002,5 | 5.006,3 |
+| **Weibull** | **4.988,7** | **4.988,7** | **4.996,2** |
+| Log-logística | 5.009,0 | 5.009,1 | 5.016,6 |
+| Log-normal | 5.009,0 | 5.009,1 | 5.016,5 |
+:::
+
+:::{focus-on="cr-distr_pse_tab" scale-by="1.3"}
+Novamente, sob os três critérios, a distibuição de melhor ajuste foi a **Weibull**.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-formula_wei}
+$S(t) = \exp \left[ -\left(\dfrac{t}{\alpha}\right)^\gamma \right]$
+:::
+
+:::{focus-on="cr-formula_wei" scale-by="2.5"}
+| Função de sobrevivência para a Weibull — $S(t)$:
+| 
+| $t$: tempo;
+| $\alpha$: parâmetro de escala;
+| $\gamma$: parâmetro de forma.
+:::
+
+
+::: {#cr-formula_wei_reg}
+$S(t) = \exp \left[ -\left(\dfrac{t}{\exp(\boldsymbol{x}^T\boldsymbol{\beta})}\right)^\gamma \right]$
+:::
+
+:::{focus-on="cr-formula_wei_reg" scale-by="2.5"}
+| Modelo de regressão para a Weibull — $S(t)$:
+| 
+| $\alpha = \exp(\boldsymbol{x}^T\boldsymbol{\beta})$;
+| $\boldsymbol{x}$: vetor de variáveis explicativas;
+| $\boldsymbol{\beta}$: vetor de parâmetros da regressão.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-ajustes_pnab style="font-size: 1.2em"}
+**Tabela:** Estimativa de modelos com uma variável explicativa para a PNAB
+
+| Variável | Coeficiente | Erro-padrão | Valor-p | BIC |
+|:---------|:-----:|:--:|:--:|:---:|
+| Orç. total exec. | 1,2003 | 0,0284 | <0,0001 | 4.289,1 |
+| Taxa veto | 0,9406 | 0,0915 | <0,0001 | 4.676,9 |
+| Orç. disc. aut. | 1,3842 | 0,0887 | <0,0001 | 4.680,5 |
+| Taxa min. | 0,8997 | 0,0859 | <0,0001 | 4.747,6 |
+| PIB per capita | 1,2076 | 0,1528 | <0,0001 | 4.776,1 |
+| Taxa exec. orç. disc. | 0,4247 | 0,0611 | <0,0001 | 4.805,4 |
+| **Taxa aprov. legis.** | **-0,4984** | 0,1183 | <0,0001 | 4.838,7 |
+| N° servidores | 0,0888 | 0,0678 | 0,1901 | 4.858,0 |
+
+*Abreviações: Orç. = orçamento; exec. = executado; disc. = discricionário; aut. = autorizado; min. = ministerial; legis. = legislativa.*
+:::
+
+:::{focus-on="cr-ajustes_pnab" scale-by="1.0"}
+Variável de melhor ajuste: *orçamento total executado*.
+:::
+
+
+::: {#cr-boxplot_orc_total_exe}
+![](imagens/boxplot_orc_emp2.png)
+:::
+
+:::{focus-on="cr-boxplot_orc_total_exe" scale-by="1.0"}
+Boxplot do *orçamento total executado* por política e adesão.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-ajustes_pse style="font-size: 1.2em"}
+**Tabela:** Estimativa de modelos com uma variável explicativa para o PSE
+
+| Variável | Coeficiente | Erro-padrão | Valor-p | BIC |
+|:---------|:-----:|:--:|:--:|:---:|
+| Taxa veto | 0,9546 | 0,0314 | <0,0001 | 4.281,3 |
+| Orç. total exec. | 1,0225 | 0,0141 | <0,0001 | 4.287,7 |
+| Orç. disc. aut. | 0,7163 | 0,0591 | <0,0001 | 4.870,3 |
+| **Taxa aprov. legis.** | **-0,4804** | 0,0447 | <0,0001 | 4.897,5 |
+| Taxa exec. orç. disc. | 0,2779 | 0,0336 | <0,0001 | 4.940,0 |
+| PIB per capita | 0,4929 | 0,0839 | <0,0001 | 4.953,3 |
+| Taxa min. | 0,1911 | 0,0384 | <0,0001 | 4.975,8 |
+| **N° servidores** | **-0,0831** | 0,0436 | 0,0566 | 4.998,3 |
+
+*Abreviações: Orç. = orçamento; exec. = executado; disc. = discricionário; aut. = autorizado; min. = ministerial; legis. = legislativa.*
+:::
+
+:::{focus-on="cr-ajustes_pse" scale-by="1.0"}
+Variável de melhor ajuste: *taxa de veto*.
+:::
+
+
+::: {#cr-boxplot_tx_veto}
+![](imagens/boxplot_tx_veto.png)
+:::
+
+:::{focus-on="cr-boxplot_tx_veto" scale-by="1.0"}
+Boxplot da *taxa de veto* por política e adesão.
+:::
+
+:::
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-copulas style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+Cópulas são funções que fornecem um meio de relacionar funções de distribuições multivariadas com funções de distribuição marginais (GOMES, 2007).
+:::
+
+:::{focus-on="cr-copulas" scale-by="1"}
+| **Cópulas**
+:::
+
+
+::: {#cr-copula_arquimediana}
+$C_{\phi}(u_{1},u_{2}) = \psi\big(\psi^{-1}(u_{1}) + \psi^{-1}(u_{2})\big)$
+:::
+
+:::{focus-on="cr-copula_arquimediana" scale-by="2"}
+| **Cópulas arquimedianas**:
+|
+| - cópula de Clayton;
+| 
+| - cópula de Frank;
+| 
+| - cópula de Gumbel.
+:::
+
+:::{focus-on="cr-copula_arquimediana" scale-by="2.15"}
+| $C_\phi$: cópula sob $\phi$;
+|
+| $\phi$: parâmetro da cópula;
+| 
+| $\psi$: função geradora;
+| 
+| $u_1$ e $u_2$: distribuições marginais.
+:::
+
+
+::: {#cr-copula_de_clayton}
+$C(u_1,u_2) = \big(u_1^{-\phi}+u_2^{-\phi}-1\big)^{-1/\phi}$
+:::
+
+:::{focus-on="cr-copula_de_clayton" scale-by="2"}
+| **Cópula de Clayton**:
+|
+| $\phi \in [-1, \infty), \ \phi \neq 0$.
+:::
+
+
+::: {#cr-tau_por_clayton}
+$\tau_\phi = \dfrac{\phi}{\phi+2}$
+:::
+
+:::{focus-on="cr-tau_por_clayton" scale-by="2.5"}
+Para a cópula de Clayton, pode-se obter o **coeficiente de correlação de Kendall** ($\tau$) da seguinte forma:
+:::
+
+
+::: {#cr-copula_de_clayton_sobr}
+$S_{12}(t_1,t_2) = \big(S_1(t_1)^{-\phi}+S_2(t_2)^{-\phi}-1\big)^{-1/\phi}$
+:::
+
+:::{focus-on="cr-copula_de_clayton_sobr" scale-by="2"}
+| **Cópula de Clayton** para análise de sobrevivência:
+|
+| $C_\phi \to S_{12}$;
+| 
+| $u_1 \to S_{1}$;
+| 
+| $u_2 \to S_{2}$.
+:::
+
+:::
+
+
+
+:::{.cr-section}
+
+<div style="
+  text-align: center;
+  width: 100vw;  /* Largura total da viewport */
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -20vw;
+  margin-right: -50vw;
+  padding: 20px 0;
+">
+
+**Modelo de regressão bivariado via cópula de Clayton:**
+
+<br> <!-- Adicione quantos <br> quiser -->
+
+$S(t_1,t_2|\boldsymbol{x}) = \left(\exp \left[ -\left(\dfrac{t_1}{\exp(\boldsymbol{x}_1^T\boldsymbol{\beta_1})}\right)^{\gamma_1} \right]^{-\phi}+\exp \left[ -\left(\dfrac{t_2}{\exp(\boldsymbol{x_2}^T\boldsymbol{\beta_2})}\right)^{\gamma_2} \right]^{-\phi} -1\right)^{-1/\phi}$
+
+</div>
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-disp_mod}
+```{r disp_mod, message=F, warning=F, cache=F}
+library(readxl)
+library(dplyr)
+library(plotly)
+avaliacao_modelos <- read_excel("avaliacao_modelos.xlsx", 
+                                sheet = "Modelos bivariados", skip = 2)
+
+avaliacao_modelos = avaliacao_modelos[avaliacao_modelos$`troca PNAB` != 'descarte', ]
+avaliacao_modelos = avaliacao_modelos[avaliacao_modelos$`troca PSE` != 'descarte', ]
+
+# Separar os dados
+dados_na <- avaliacao_modelos |> filter(!is.na(label))
+dados_validos <- avaliacao_modelos |> filter(is.na(label))
+
+# Gráfico de dispersão interativo
+disp_mod <- plot_ly() |>
+  # Primeiro plotar os pontos com valores (gradiente normal)
+  add_trace(
+    data = dados_validos,
+    x = ~BIC,
+    y = ~theta,
+    type = 'scatter',
+    mode = 'markers',
+    color = ~qtd_covs,
+    colorscale = "Viridis",
+    name = "Demais modelos",
+    size = 0.8,
+    text = ~paste0("BIC: ", BIC, "; phi: ", theta,
+                   "\nPNAB: ", `Covariáveis PNAB`,
+                   "\nPSE: ", `Covariáveis PSE`),
+    hoverinfo = 'text'
+  ) |>
+  # Depois adicionar os pontos NA em vermelho por cima
+  add_trace(
+    data = dados_na,
+    x = ~BIC,
+    y = ~theta,
+    type = 'scatter',
+    mode = 'markers',
+    marker = list(color = ~qtd_covs, colorscale = "Viridis", cmin = 0, cmax = 10),
+    name = "Modelos destacados",
+    showlegend = TRUE,
+    size = 0.8,
+    text = ~paste0(label, "\nBIC: ", BIC, "; phi: ", theta,
+                   "\nPNAB: ", `Covariáveis PNAB`,
+                   "\nPSE: ", `Covariáveis PSE`),
+    hoverinfo = 'text'
+  )
+
+disp_mod <- layout(
+  disp_mod,
+  title = "Gráfico de dispersão dos modelos bivariados",
+  xaxis = list(title = "BIC"),
+  yaxis = list(title = "φ"),
+  legend = list(
+    orientation = "h",      # 'h' para horizontal (embaixo), 'v' para vertical
+    x = 0.5,               # Posição horizontal: 0 (esquerda), 0.5 (centro), 1 (direita)
+    y = -0.2,              # Posição vertical: negativo coloca abaixo do gráfico
+    xanchor = "center",    # Ancora do ponto x: "left", "center", "right"
+    yanchor = "top")       # Ancora do ponto y: "top", "middle", "bottom"
+)
+
+disp_mod
+```
+
+:::
+
+:::{focus-on="cr-disp_mod" scale-by="1.2"}
+| **Percepções**:
+| 
+| 1. Modelos com mais covariáveis (até 10) tendem a ter menor BIC;
+| 
+| 2. Modelos com menor BIC tendem a ter $\phi \approx -0,05$;
+:::
+
+:::{focus-on="cr-disp_mod" scale-by="1.25"}
+| 3. Possível relação linear entre BIC e $\phi$;
+| 
+| 4. $\phi$ é muito sensível às variáveis explicativas.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+::: {#cr-bp_pib}
+![](imagens/boxplot_pib.png)
+:::
+
+:::{focus-on="cr-bp_pib" scale-by="1.0"}
+| **Variável controle**:
+| 
+| log(*PIB per capita*)
+:::
+
+
+::: {#cr-bp_mod1}
+![](imagens/bp_mod1.png)
+:::
+
+:::{focus-on="cr-bp_mod1" scale-by="1.0"}
+| Demais covariáveis do
+| **Modelo 1**:
+| 
+| *Orçamento discricionário autorizado*;
+| 
+| *Taxa de execução do orçamento discricionário*.
+:::
+
+:::
+
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-tab_mod1 style="font-size: 1.0em"}
+**Tabela:** Estimativa dos parâmetros do Modelo 1
+
+| Associação | Parâmetro | Coeficiente | Erro-padrão | Valor-p |
+|:-----------|:----------|:-----:|:--:|:--:|
+| **PNAB** | Intercepto | 7,1796 | 0,0244 | <0,0001 |
+| | log(PIB per capita) | 0,0530 | 0,0274 | 0,0531 |
+| | log(Orç. total exec.) | 1,1000 | 0,0303 | <0,0001 |
+| | Taxa exec. orç. disc. | 0,2738 | 0,0297 | <0,0001 |
+| | γ | 2,7013 | 0,1529 | -- |
+| **PSE** | Intercepto | 7,6453 | 0,0142 | <0,0001 |
+| | log(PIB per capita) | 0,0120 | 0,0148 | 0,4201 |
+| | Taxa veto | 0,7109 | 0,0301 | <0,0001 |
+| | log(Orç. disc. aut.) | 0,1792 | 0,0150 | <0,0001 |
+| | γ | 4,5032 | 0,2570 | -- |
+| **Cópula** | φ | 0,8566 | 0,2607 | -- |
+
+*Abreviações: Orç. = orçamento; exec. = executado; disc. = discricionário; aut. = autorizado.*
+:::
+
+:::{focus-on="cr-tab_mod1" scale-by="1.0"}
+| **Modelo 1**
+|
+| 1. Todos os coeficientes foram positivos;
+| 
+| 2. As covariáveis de maior magnitude foram as mesmas dos ajustes univariados.
+:::
+
+:::{focus-on="cr-tab_mod1" scale-by="1.05"}
+| 3. BIC = 8.390;
+|
+| 4. $\phi=0,86$ implica em $\tau_{0,86} = 0,30$.
+:::
+
+:::
+
+
+
+```{r carrega_funcoes_superficie, message=F, warning=F, cache=F}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(survival)
+library(AdequacyModel)
+library(AICcmodavg)
+library(zoo)
+library(readxl)
+library(car)
+library(writexl)
+library(numDeriv)
+library(msm)
+
+
+# cópulas - ajuste de Breno ----
+
+t1 = df_pnab$t; delta1 = df_pnab$ADOPT
+t2 = df_pse$t; delta2 = df_pse$ADOPT
+
+num_grande = 1e+300
+
+S_theta = function(t, alfa, gama, theta){
+  res = exp( (t/alfa)^gama *theta )
+  res = min(num_grande, res)
+  return(res)
+}
+S_theta = function(t, alfa, gama, theta){
+  exp( (t/alfa)^gama *theta )
+}
+
+
+log_S_theta = function(t, alfa, gama, theta){
+  (t/alfa)^gama *theta
+}
+
+num_pequeno = 1e-300
+
+S_cop = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 0 & delta2 == 0) ~ 
+                     (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^(-1/theta),
+                   T ~ 1 )
+  res = ifelse(res == 0, num_pequeno, res)
+  return(res)
+}
+
+log_S_cop = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 0 & delta2 == 0) ~ 
+                     (-1/theta) * log(S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1),
+                   T ~ 0 )
+  return(res)
+}
+
+
+parc_t1 = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 1 & delta2 == 0) ~
+                     gama1/alfa1 *(t1/alfa1)^(gama1-1) * S_theta(t1, alfa1, gama1, theta) *
+                     (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^((-1/theta)-1),
+                   T ~ 1 )
+  res = ifelse(res == 0, num_pequeno, res)
+  return(res)
+}
+
+log_parc_t1 = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 1 & delta2 == 0) ~
+                     log(gama1) -log(alfa1) +(gama1-1)*log(t1/alfa1) +log_S_theta(t1, alfa1, gama1, theta) +
+                     ((-1/theta)-1)*log(S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1),
+                   T ~ 0 )
+  return(res)
+}
+
+
+parc_t2 = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 0 & delta2 == 1) ~
+                     gama2/alfa2 *(t2/alfa2)^(gama2-1) * S_theta(t2, alfa2, gama2, theta) *
+                     (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^((-1/theta)-1),
+                   T ~ 1 )
+  res = ifelse(res == 0, num_pequeno, res)
+}
+
+log_parc_t2 = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 0 & delta2 == 1) ~
+                     log(gama2) -log(alfa2) +(gama2-1)*log(t2/alfa2) +log_S_theta(t2, alfa2, gama2, theta) +
+                     ((-1/theta)-1)*log(S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1),
+                   T ~ 0 )
+}
+
+
+f_cop = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 1 & delta2 == 1) ~
+                     (1+theta) *gama1/alfa1*(t1/alfa1)^(gama1-1) *gama2/alfa2*(t2/alfa2)^(gama2-1) *
+                     S_theta(t1, alfa1, gama1, theta) * S_theta(t2, alfa2, gama2, theta) * 
+                     (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^((-1/theta)-2),
+                   T ~ 1 )
+  res = ifelse(res == 0, num_pequeno, res)
+  return(res)
+}
+
+log_f_cop = function(alfa1, gama1, alfa2, gama2, theta){
+  res = case_when( (delta1 == 1 & delta2 == 1) ~
+                     log(1+theta) +log(gama1) -log(alfa1) +(gama1-1)*log(t1/alfa1) +log(gama2) -log(alfa2) +(gama2-1)*log(t2/alfa2) +
+                     log_S_theta(t1, alfa1, gama1, theta) +log_S_theta(t2, alfa2, gama2, theta) + 
+                     ((-1/theta)-2)*log(S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1),
+                   T ~ 0 )
+  return(res)
+}
+
+
+# Estimativa pontual ----
+
+S_estim = function(t, cov, b0, b1, gama){
+  alfa = exp(b0 + b1*cov)
+  exp( -(t/alfa)^gama )
+}
+
+S_cop_estim = function(t1, t2, cov1, cov2, b01, b11, gama1, b02, b12, gama2, theta){
+  alfa1 = exp(b01 + b11*cov1); alfa2 = exp(b02 + b12*cov2)
+  (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^(-1/theta)
+}
+```
+
+
+:::{.cr-section layout="sidebar-left"}
+
+```{r ajuste_mod1, message=F, warning=F, cache=T, include=F}
+## Modelo 1 ----
+
+ajust1 = survreg(data = df_pnab, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(log(ORC_TOTAL_EMPENHADO)) 
+                 + scale(DISCR_TX)
+                 ,
+                 dist = 'weibull')
+# summary(ajust1); c(AIC(ajust1), AICc(ajust1), BIC(ajust1))
+# vif(ajust1); check_multicol_survreg(ajust1)
+
+ajust2 = survreg(data = df_pse, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(TX_VETO) + 
+                   scale(log(DISCR_DOTACAO))
+                 ,
+                 dist = 'weibull')
+# summary(ajust2); c(AIC(ajust2), AICc(ajust2), BIC(ajust2))
+# vif(ajust2); check_multicol_survreg(ajust2)
+
+#(valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, .15))
+
+vero_cop_debug = function(para) {
+  cat("Parâmetros:", round(para, 6), "\n")
+  
+  qtd_par = length(para)
+  if ( length(ajust1$coefficients) == length(ajust2$coefficients) ){
+    if (qtd_par==7){ # 1 cov
+      b01 = para[1]; b11 = para[2]; gama1 = para[3];
+      b02 = para[4]; b12 = para[5]; gama2 = para[6];
+      theta = para[7]
+    } else if(qtd_par==9){ # 2 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; gama1 = para[4];
+      b02 = para[5]; b12 = para[6]; b22 = para[7]; gama2 = para[8];
+      theta = para[9]
+    } else if(qtd_par==11){ # 3 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; gama1 = para[5];
+      b02 = para[6]; b12 = para[7]; b22 = para[8]; b32 = para[9]; gama2 = para[10];
+      theta = para[11]
+    } else if(qtd_par==13){ # 4 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; gama1 = para[6];
+      b02 = para[7]; b12 = para[8]; b22 = para[9]; b32 = para[10]; b42 = para[11]; gama2 = para[12];
+      theta = para[13]
+    } else if(qtd_par==15){ # 5 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; b51 = para[6]; gama1 = para[7];
+      b02 = para[8]; b12 = para[9]; b22 = para[10]; b32 = para[11]; b42 = para[12]; b52 = para[13]; gama2 = para[14];
+      theta = para[15]
+    }
+  } else { # nums de covs diferentes
+    b01 = para[1]; b11 = para[2]; b21 = para[3]; gama1 = para[4];
+    b02 = para[5]; b12 = para[6]; b22 = para[7]; b32 = para[8]; gama2 = para[9];
+    theta = para[10]
+  }
+  
+  
+  if (gama1 <= 0 | gama2 <= 0) {
+    cat("Gama não positivo:", gama1, gama2, "\n")
+    return(1e10)
+  }
+  
+  alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) +
+                b31 * scale(df_pnab$DISCR_TX) ) #+ b41 * scale(log(df_pnab$SERVIDORES)) )
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) +
+  #               b31 * scale(df_pnab$DISCR_TX) + b41 * scale(log(df_pnab$SERVIDORES)) )
+  #               #b51 * df_pnab$ANO_ELEITORAL_MUNIC)
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) )
+  alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(df_pse$TX_VETO) +
+                b32 * scale(log(df_pse$DISCR_DOTACAO)) ) #+ b42 * scale(df_pse$DISCR_TX) +
+  #b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(log(df_pse$ORC_TOTAL_EMPENHADO)) +
+  #               b32 * scale(log(df_pse$TX_SUCESSO)) + b42 * scale(log(df_pse$DISCR_TX)) +
+  #               b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa = exp( b0 + b1*scale(df_pse$TX_VETO) + b2*df_pse$CARREIRAS +
+  #               b3*scale(log(df_pse$DISCR_DOTACAO))+ b4*scale(df_pse$PIB))
+  
+  if ( any(!is.finite(alfa1)) || any(alfa1 <= 0) || any(!is.finite(alfa2)) || any(alfa2 <= 0) ) {
+    cat("Alfa inválido\n")
+    return(1e10)
+  }
+  
+  log_vero_S = log_S_cop(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t1 = log_parc_t1(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t2 = log_parc_t2(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_f = log_f_cop(alfa1, gama1, alfa2, gama2, theta)
+  
+  result <- -sum(log_vero_S, log_vero_parc_t1, log_vero_parc_t2, log_vero_f)
+  
+  # cat("log_vero_S", sum(log_vero_S), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t1), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t2), '\n')
+  # cat("log_vero_f", sum(log_vero_f), '\n')
+  
+  cat("Resultado:", ifelse(is.finite(result), round(result, 4), "Não finito"), "\n\n")
+  
+  if (!is.finite(result)) {
+    return(1e10)
+  }
+  
+  return(result)
+}
+
+valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, 0.1)
+# nlminb é geralmente mais robusto que optim para problemas com bounds
+MLE_nlminb <- nlminb(start = valorin1,
+                     objective = vero_cop_debug,
+                     # lower = c(rep(-Inf, 10), 0.00248),
+                     # upper = c(100, 10, 100, 100, 10, 100, 4, 2),
+                     control = list(iter.max = 2000, eval.max = 2000))
+# tau = MLE_nlminb[["par"]][[length(valorin1)]] / (2+MLE_nlminb[["par"]][[length(valorin1)]])
+# log_lik = -MLE_nlminb$objective; k = length(MLE_nlminb$par); n_observacoes = nrow(df_pnab)
+# aic = 2 * k - 2 * log_lik; aicc = aic + (2 * k * (k + 1)) / (n_observacoes - k - 1); bic = log(n_observacoes) * k - 2 * log_lik
+# print(MLE_nlminb); paste0('tau: ', round(tau, 4) )
+# paste0("AIC: ", round(aic, 3), "; AICc: ", round(aicc, 3), "; BIC: ", round(bic, 3), "; Vero: ", round(log_lik, 3) )
+
+S_cop_estim = function(t1, t2, cov11, cov21, cov31, cov12, cov22, cov32,
+                       b01, b11, b21, b31, gama1, b02, b12, b22, b32, gama2, theta){
+  alfa1 = exp(b01 + b11*cov11 + b21*cov21 + b31*cov31); alfa2 = exp(b02 + b12*cov12 + b22*cov22 + b32*cov32)
+  (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^(-1/theta)
+}
+
+# Definir a função f(x,y) com os parâmetros fixos
+f <- function(x, y) {
+  S_cop_estim(x, y, 0, 0, 0, 0, 0, 0, 
+              MLE_nlminb$par[1], MLE_nlminb$par[2], MLE_nlminb$par[3], 
+              MLE_nlminb$par[4], MLE_nlminb$par[5], MLE_nlminb$par[6],
+              MLE_nlminb$par[7], MLE_nlminb$par[8], MLE_nlminb$par[9], 
+              MLE_nlminb$par[10], MLE_nlminb$par[11])
+}
+
+# Criar sequências de valores de 0 a 6000
+pnab <- seq(0, 2800, length.out = 30)
+pse <- seq(0, 3500, length.out = 30)
+# Calcular a matriz z
+S <- outer(pnab, pse, f)
+```
+
+::: {#cr-sup_mod1}
+```{r superficie_mod1, message=F, warning=F, cache=T}
+library(plotly)
+plot_ly() %>%
+  add_surface(x = ~pnab, y = ~pse, z = ~t(S), 
+              colorscale = list(c(0, 1), c("#caf4fc", "#1a074a")),
+ hovertemplate = paste(
+      "PNAB: %{x:.4f}<br>",
+      "PSE: %{y:.4f}<br>",
+      "S: %{z:.4f}<br>",
+      "<extra></extra>"  # Remove a informação extra (x, y, z)
+    ),
+    hoverinfo = 'text'
+              ) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "Tempos PNAB"),
+      yaxis = list(title = "Tempos PSE"), 
+      zaxis = list(title = "S(t<sub>1</sub>,t<sub>2</sub>)"),
+      camera = list(eye = list(x = 1.5, y = 1.5, z = 1.5))
+    ),
+    title = list(
+      text = "Superfície do Modelo 1",
+      x = 0.5,  # Centralizado
+      font = list(size = 16)
+    )
+  )
+```
+:::
+
+:::{focus-on="cr-sup_mod1" scale-by="1.15"}
+Superfície formada pelo **Modelo 1** quando todas as variáveis explicativas são iguais a sua média.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-tab_mod2 style="font-size: 1.0em"}
+**Tabela:** Estimativa dos parâmetros do Modelo 2
+
+| Associação | Parâmetro | Coeficiente | Erro-padrão | Valor-p |
+|:-----------|:----------|:-----:|:--:|:--:|
+| **PNAB** | Intercepto | 7,1811 | 0,0243 | <0,0001 |
+| | log(PIB per capita) | 0,0417 | 0,0297 | 0,1600 |
+| | log(Orç. total exec.) | 1,1385 | 0,0344 | <0,0001 |
+| | Taxa exec. orç. disc. | 0,2669 | 0,0317 | <0,0001 |
+| | γ | 2,7781 | 0,1541 | -- |
+| **PSE** | Intercepto | 7,6586 | 0,0139 | <0,0001 |
+| | log(PIB per capita) | 0,0100 | 0,0163 | 0,5409 |
+| | Taxa veto | 0,9905 | 0,0305 | <0,0001 |
+| | **Taxa exec. orç. disc.** | **-0,1718** | 0,0161 | <0,0001 |
+| | γ | 4,6551 | 0,2501 | -- |
+| **Cópula** | φ | 0,1927 | 0,2400 | -- |
+
+*Abreviações: Orç. = orçamento; exec. = executado; disc. = discricionário.*
+:::
+
+:::{focus-on="cr-tab_mod2" scale-by="1.0"}
+| **Modelo 2**
+|
+| 1. A *taxa de execução do orçamento discricionário* trocou de sinal;
+| 
+| 2. Novamente, as covariáveis de maior magnitude foram as mesmas dos ajustes univariados;
+:::
+
+:::{focus-on="cr-tab_mod2" scale-by="1.05"}
+| 3. BIC = 8.370;
+|
+| 4. $\phi=0,19$ implica em $\tau_{0,19} = 0,09$.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+```{r ajuste_mod2, message=F, warning=F, cache=T, include=F}
+## Modelo 2 ----
+
+ajust1 = survreg(data = df_pnab, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(log(ORC_TOTAL_EMPENHADO)) 
+                 + scale(DISCR_TX)
+                 ,
+                 dist = 'weibull')
+# summary(ajust1); c(AIC(ajust1), AICc(ajust1), BIC(ajust1))
+# vif(ajust1); check_multicol_survreg(ajust1)
+
+ajust2 = survreg(data = df_pse, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(TX_VETO) + 
+                   scale(DISCR_TX)
+                 ,
+                 dist = 'weibull')
+# summary(ajust2); c(AIC(ajust2), AICc(ajust2), BIC(ajust2))
+# vif(ajust2); check_multicol_survreg(ajust2)
+
+#(valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, .15))
+
+vero_cop_debug = function(para) {
+  cat("Parâmetros:", round(para, 6), "\n")
+  
+  qtd_par = length(para)
+  if ( length(ajust1$coefficients) == length(ajust2$coefficients) ){
+    if (qtd_par==7){ # 1 cov
+      b01 = para[1]; b11 = para[2]; gama1 = para[3];
+      b02 = para[4]; b12 = para[5]; gama2 = para[6];
+      theta = para[7]
+    } else if(qtd_par==9){ # 2 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; gama1 = para[4];
+      b02 = para[5]; b12 = para[6]; b22 = para[7]; gama2 = para[8];
+      theta = para[9]
+    } else if(qtd_par==11){ # 3 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; gama1 = para[5];
+      b02 = para[6]; b12 = para[7]; b22 = para[8]; b32 = para[9]; gama2 = para[10];
+      theta = para[11]
+    } else if(qtd_par==13){ # 4 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; gama1 = para[6];
+      b02 = para[7]; b12 = para[8]; b22 = para[9]; b32 = para[10]; b42 = para[11]; gama2 = para[12];
+      theta = para[13]
+    } else if(qtd_par==15){ # 5 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; b51 = para[6]; gama1 = para[7];
+      b02 = para[8]; b12 = para[9]; b22 = para[10]; b32 = para[11]; b42 = para[12]; b52 = para[13]; gama2 = para[14];
+      theta = para[15]
+    }
+  } else { # nums de covs diferentes
+    b01 = para[1]; b11 = para[2]; b21 = para[3]; gama1 = para[4];
+    b02 = para[5]; b12 = para[6]; b22 = para[7]; b32 = para[8]; gama2 = para[9];
+    theta = para[10]
+  }
+  
+  
+  if (gama1 <= 0 | gama2 <= 0) {
+    cat("Gama não positivo:", gama1, gama2, "\n")
+    return(1e10)
+  }
+  
+  alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) +
+                b31 * scale(df_pnab$DISCR_TX) ) #+ b41 * scale(log(df_pnab$SERVIDORES)) )
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) +
+  #               b31 * scale(df_pnab$DISCR_TX) + b41 * scale(log(df_pnab$SERVIDORES)) )
+  #               #b51 * df_pnab$ANO_ELEITORAL_MUNIC)
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) )
+  alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(df_pse$TX_VETO) +
+                b32 * scale(df_pse$DISCR_TX) ) #+ b42 * scale(df_pse$DISCR_TX) +
+  #b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(log(df_pse$ORC_TOTAL_EMPENHADO)) +
+  #               b32 * scale(log(df_pse$TX_SUCESSO)) + b42 * scale(log(df_pse$DISCR_TX)) +
+  #               b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa = exp( b0 + b1*scale(df_pse$TX_VETO) + b2*df_pse$CARREIRAS +
+  #               b3*scale(log(df_pse$DISCR_DOTACAO))+ b4*scale(df_pse$PIB))
+  
+  if ( any(!is.finite(alfa1)) || any(alfa1 <= 0) || any(!is.finite(alfa2)) || any(alfa2 <= 0) ) {
+    cat("Alfa inválido\n")
+    return(1e10)
+  }
+  
+  log_vero_S = log_S_cop(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t1 = log_parc_t1(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t2 = log_parc_t2(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_f = log_f_cop(alfa1, gama1, alfa2, gama2, theta)
+  
+  result <- -sum(log_vero_S, log_vero_parc_t1, log_vero_parc_t2, log_vero_f)
+  
+  # cat("log_vero_S", sum(log_vero_S), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t1), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t2), '\n')
+  # cat("log_vero_f", sum(log_vero_f), '\n')
+  
+  cat("Resultado:", ifelse(is.finite(result), round(result, 4), "Não finito"), "\n\n")
+  
+  if (!is.finite(result)) {
+    return(1e10)
+  }
+  
+  return(result)
+}
+
+valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, 0.1)
+# nlminb é geralmente mais robusto que optim para problemas com bounds
+MLE_nlminb <- nlminb(start = valorin1,
+                     objective = vero_cop_debug,
+                     # lower = c(rep(-Inf, 10), 0.00248),
+                     # upper = c(100, 10, 100, 100, 10, 100, 4, 2),
+                     control = list(iter.max = 2000, eval.max = 2000))
+# tau = MLE_nlminb[["par"]][[length(valorin1)]] / (2+MLE_nlminb[["par"]][[length(valorin1)]])
+# log_lik = -MLE_nlminb$objective; k = length(MLE_nlminb$par); n_observacoes = nrow(df_pnab)
+# aic = 2 * k - 2 * log_lik; aicc = aic + (2 * k * (k + 1)) / (n_observacoes - k - 1); bic = log(n_observacoes) * k - 2 * log_lik
+# print(MLE_nlminb); paste0('tau: ', round(tau, 4) )
+# paste0("AIC: ", round(aic, 3), "; AICc: ", round(aicc, 3), "; BIC: ", round(bic, 3), "; Vero: ", round(log_lik, 3) )
+
+S_cop_estim = function(t1, t2, cov11, cov21, cov31, cov12, cov22, cov32,
+                       b01, b11, b21, b31, gama1, b02, b12, b22, b32, gama2, theta){
+  alfa1 = exp(b01 + b11*cov11 + b21*cov21 + b31*cov31); alfa2 = exp(b02 + b12*cov12 + b22*cov22 + b32*cov32)
+  (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^(-1/theta)
+}
+# Definir a função f(x,y) com os parâmetros fixos
+f <- function(x, y) {
+  S_cop_estim(x, y, 0, 0, 0, 0, 0, 0, 
+              MLE_nlminb$par[1], MLE_nlminb$par[2], MLE_nlminb$par[3], 
+              MLE_nlminb$par[4], MLE_nlminb$par[5], MLE_nlminb$par[6],
+              MLE_nlminb$par[7], MLE_nlminb$par[8], MLE_nlminb$par[9], 
+              MLE_nlminb$par[10], MLE_nlminb$par[11])
+}
+
+# Criar sequências de valores de 0 a 6000
+x <- seq(0, 2800, length.out = 30)
+y <- seq(0, 3500, length.out = 30)
+# Calcular a matriz z
+z <- outer(x, y, f)
+```
+
+::: {#cr-sup_mod2}
+```{r superficie_mod2, message=F, warning=F, cache=T}
+library(plotly)
+plot_ly() %>%
+  add_surface(x = ~x, y = ~y, z = ~t(z), 
+              colorscale = list(c(0, 1), c("#caf4fc", "#1a074a")),
+    hovertemplate = paste(
+      "PNAB: %{x:.4f}<br>",
+      "PSE: %{y:.4f}<br>",
+      "S: %{z:.4f}<br>",
+      "<extra></extra>"  # Remove a informação extra (x, y, z)
+    ),
+    hoverinfo = 'text'
+              ) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "Tempos PNAB"),
+      yaxis = list(title = "Tempos PSE"), 
+      zaxis = list(title = "S(t<sub>1</sub>,t<sub>2</sub>)"),
+      camera = list(eye = list(x = 1.5, y = 1.5, z = 1.5))
+    ),
+    title = list(
+      text = "Superfície do Modelo 2",
+      x = 0.5,  # Centralizado
+      font = list(size = 16)
+    )
+  )
+```
+:::
+
+:::{focus-on="cr-sup_mod2" scale-by="1.15"}
+Superfície formada pelo **Modelo 2** quando todas as variáveis explicativas são iguais a sua média.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-tab_mod3 style="font-size: 1.0em"}
+**Tabela:** Estimativa dos parâmetros do Modelo 3
+
+| Associação | Parâmetro | Coeficiente | Erro-padrão | Valor-p |
+|:-----------|:----------|:-----:|:--:|:--:|
+| **PNAB** | Intercepto | 7,1743 | 0,0251 | <0,0001 |
+| | log(PIB per capita) | 0,0415 | 0,0342 | 0,2240 |
+| | log(Orç. total exec.) | 1,1725 | 0,0344 | <0,0001 |
+| | γ | 2,4229 | 0,1320 | -- |
+| **PSE** | Intercepto | 7,6469 | 0,0147 | <0,0001 |
+| | log(PIB per capita) | 0,0099 | 0,0160 | 0,5385 |
+| | Taxa veto | 0,7529 | 0,0303 | <0,0001 |
+| | log(Orç. disc. aut.) | 0,1864 | 0,0182 | <0,0001 |
+| | γ | 4,6194 | 0,2491 | -- |
+| **Cópula** | φ | 0,0525 | 0,1728 | -- |
+
+*Abreviações: Orç. = orçamento; exec. = executado; disc. = discricionário; aut. = autorizado.*
+:::
+
+:::{focus-on="cr-tab_mod3" scale-by="1.0"}
+| **Modelo 3**
+|
+| 1. BIC = 8.491;
+| 
+| 2. $\phi=0,05$ implica em $\tau_{0,05} = 0,03$, o que sugere independência.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+```{r ajuste_mod3, message=F, warning=F, cache=T, include=F}
+## Modelo 3 ----
+
+ajust1 = survreg(data = df_pnab, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(log(ORC_TOTAL_EMPENHADO))
+                 ,
+                 dist = 'weibull')
+# summary(ajust1); c(AIC(ajust1), AICc(ajust1), BIC(ajust1))
+# vif(ajust1); check_multicol_survreg(ajust1)
+
+ajust2 = survreg(data = df_pse, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(TX_VETO) +
+                   scale(log(DISCR_DOTACAO))
+                 
+                 ,
+                 dist = 'weibull')
+# summary(ajust2); c(AIC(ajust2), AICc(ajust2), BIC(ajust2))
+# vif(ajust2); check_multicol_survreg(ajust2)
+
+# (valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, .15))
+
+vero_cop_debug = function(para) {
+  cat("Parâmetros:", round(para, 6), "\n")
+  
+  qtd_par = length(para)
+  if ( length(ajust1$coefficients) == length(ajust2$coefficients) ){
+    if (qtd_par==7){ # 1 cov
+      b01 = para[1]; b11 = para[2]; gama1 = para[3];
+      b02 = para[4]; b12 = para[5]; gama2 = para[6];
+      theta = para[7]
+    } else if(qtd_par==9){ # 2 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; gama1 = para[4];
+      b02 = para[5]; b12 = para[6]; b22 = para[7]; gama2 = para[8];
+      theta = para[9]
+    } else if(qtd_par==11){ # 3 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; gama1 = para[5];
+      b02 = para[6]; b12 = para[7]; b22 = para[8]; b32 = para[9]; gama2 = para[10];
+      theta = para[11]
+    } else if(qtd_par==13){ # 4 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; gama1 = para[6];
+      b02 = para[7]; b12 = para[8]; b22 = para[9]; b32 = para[10]; b42 = para[11]; gama2 = para[12];
+      theta = para[13]
+    } else if(qtd_par==15){ # 5 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; b51 = para[6]; gama1 = para[7];
+      b02 = para[8]; b12 = para[9]; b22 = para[10]; b32 = para[11]; b42 = para[12]; b52 = para[13]; gama2 = para[14];
+      theta = para[15]
+    }
+  } else { # nums de covs diferentes
+    b01 = para[1]; b11 = para[2]; b21 = para[3]; gama1 = para[4];
+    b02 = para[5]; b12 = para[6]; b22 = para[7]; b32 = para[8]; gama2 = para[9];
+    theta = para[10]
+  }
+  
+  
+  if (gama1 <= 0 | gama2 <= 0) {
+    cat("Gama não positivo:", gama1, gama2, "\n")
+    return(1e10)
+  }
+  
+  alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) ) #+
+                #b31 * scale(log(df_pnab$DISCR_DOTACAO)) ) #+ b41 * scale(log(df_pnab$SERVIDORES)) )
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) +
+  #               b31 * scale(df_pnab$DISCR_TX) + b41 * scale(log(df_pnab$SERVIDORES)) )
+  #               #b51 * df_pnab$ANO_ELEITORAL_MUNIC)
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) )
+  alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(df_pse$TX_VETO) +
+                b32 * scale(log(df_pse$DISCR_DOTACAO)) ) #+ b42 * scale(df_pse$DISCR_TX) +
+  #b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(log(df_pse$ORC_TOTAL_EMPENHADO)) +
+  #               b32 * scale(log(df_pse$TX_SUCESSO)) + b42 * scale(log(df_pse$DISCR_TX)) +
+  #               b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa = exp( b0 + b1*scale(df_pse$TX_VETO) + b2*df_pse$CARREIRAS +
+  #               b3*scale(log(df_pse$DISCR_DOTACAO))+ b4*scale(df_pse$PIB))
+  
+  if ( any(!is.finite(alfa1)) || any(alfa1 <= 0) || any(!is.finite(alfa2)) || any(alfa2 <= 0) ) {
+    cat("Alfa inválido\n")
+    return(1e10)
+  }
+  
+  log_vero_S = log_S_cop(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t1 = log_parc_t1(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t2 = log_parc_t2(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_f = log_f_cop(alfa1, gama1, alfa2, gama2, theta)
+  
+  result <- -sum(log_vero_S, log_vero_parc_t1, log_vero_parc_t2, log_vero_f)
+  
+  # cat("log_vero_S", sum(log_vero_S), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t1), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t2), '\n')
+  # cat("log_vero_f", sum(log_vero_f), '\n')
+  
+  cat("Resultado:", ifelse(is.finite(result), round(result, 4), "Não finito"), "\n\n")
+  
+  if (!is.finite(result)) {
+    return(1e10)
+  }
+  
+  return(result)
+}
+
+valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, 0.1)
+# nlminb é geralmente mais robusto que optim para problemas com bounds
+MLE_nlminb <- nlminb(start = valorin1,
+                     objective = vero_cop_debug,
+                     # lower = c(rep(-Inf, 10), 0.00248),
+                     # upper = c(100, 10, 100, 100, 10, 100, 4, 2),
+                     control = list(iter.max = 2000, eval.max = 2000))
+# tau = MLE_nlminb[["par"]][[length(valorin1)]] / (2+MLE_nlminb[["par"]][[length(valorin1)]])
+# log_lik = -MLE_nlminb$objective; k = length(MLE_nlminb$par); n_observacoes = nrow(df_pnab)
+# aic = 2 * k - 2 * log_lik; aicc = aic + (2 * k * (k + 1)) / (n_observacoes - k - 1); bic = log(n_observacoes) * k - 2 * log_lik
+# print(MLE_nlminb); paste0('tau: ', round(tau, 4) )
+# paste0("AIC: ", round(aic, 3), "; AICc: ", round(aicc, 3), "; BIC: ", round(bic, 3), "; Vero: ", round(log_lik, 3) )
+
+S_cop_estim = function(t1, t2, cov11, cov21, cov12, cov22, cov32,
+                       b01, b11, b21, gama1, b02, b12, b22, b32, gama2, theta){
+  alfa1 = exp(b01 + b11*cov11 + b21*cov21); alfa2 = exp(b02 + b12*cov12 + b22*cov22 + b32*cov32)
+  (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^(-1/theta)
+}
+# Definir a função f(x,y) com os parâmetros fixos
+f <- function(x, y) {
+  S_cop_estim(x, y, 0, 0, 0, 0, 0, 
+              MLE_nlminb$par[1], MLE_nlminb$par[2], MLE_nlminb$par[3], 
+              MLE_nlminb$par[4], MLE_nlminb$par[5], MLE_nlminb$par[6],
+              MLE_nlminb$par[7], MLE_nlminb$par[8], MLE_nlminb$par[9], 
+              MLE_nlminb$par[10])
+}
+
+# Criar sequências de valores de 0 a 6000
+x <- seq(0, 2800, length.out = 30)
+y <- seq(0, 3500, length.out = 30)
+# Calcular a matriz z
+z <- outer(x, y, f)
+```
+
+::: {#cr-sup_mod3}
+```{r superficie_mod3, message=F, warning=F, cache=T}
+library(plotly)
+plot_ly() %>%
+  add_surface(x = ~x, y = ~y, z = ~t(z), 
+              colorscale = list(c(0, 1), c("#caf4fc", "#1a074a")),
+    hovertemplate = paste(
+      "PNAB: %{x:.4f}<br>",
+      "PSE: %{y:.4f}<br>",
+      "S: %{z:.4f}<br>",
+      "<extra></extra>"  # Remove a informação extra (x, y, z)
+    ),
+    hoverinfo = 'text'
+              ) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "Tempos PNAB"),
+      yaxis = list(title = "Tempos PSE"), 
+      zaxis = list(title = "S(t<sub>1</sub>,t<sub>2</sub>)"),
+      camera = list(eye = list(x = 1.5, y = 1.5, z = 1.5))
+    ),
+    title = list(
+      text = "Superfície do Modelo 3",
+      x = 0.5,  # Centralizado
+      font = list(size = 16)
+    )
+  )
+```
+:::
+
+:::{focus-on="cr-sup_mod3" scale-by="1.15"}
+Superfície formada pelo **Modelo 3** quando todas as variáveis explicativas são iguais a sua média.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-margs_indep}
+$S_{12}(t_1,t_2) = S_{1}(t_1)S_{2}(t_2)$
+:::
+
+:::{focus-on="cr-margs_indep" scale-by="2.5"}
+Ao supor que os tempos da PNAB e do PSE são **independentes**, **$\phi=0$**, sua distribuição conjunta $S_{12}$ é dada por:
+:::
+
+
+::: {#cr-mod3_residuos}
+![](imagens/res_mod3.png)
+:::
+
+:::{focus-on="cr-mod3_residuos" scale-by="1.0"}
+| Assim, pode-se analisar seus **resíduos**.
+| 
+| Os **resíduos de Cox-Snell** indicam o ajuste **global** do modelo.
+:::
+
+:::
+
+
+
+:::{.cr-section}
+
+<div style="
+  text-align: center;
+  width: 100vw;  /* Largura total da viewport */
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -20vw;
+  margin-right: -50vw;
+  padding: 20px 0;
+">
+
+**Variáveis novas do Modelo 4:**
+
+<br>
+
+![](imagens/bp_mod4.png){fig-align="center" width="80%"}
+
+</div>
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-tab_mod4 style="font-size: 0.8em"}
+**Tabela:** Estimativa dos parâmetros do Modelo 4
+
+| Associação | Parâmetro | Coeficiente | Erro-padrão | Valor-p |
+|:-----------|:----------|:-----:|:--:|:--:|
+| **PNAB** | Intercepto | 7,2033 | -- | -- |
+| | log(PIB per capita) | 0,0109 | -- | -- |
+| | log(Orç. total exec.) | 1,3906 | -- | -- |
+| | Taxa exec. orç. disc. | 0,1346 | -- | -- |
+| | **log(N° servidores)** | **-0,3049** | -- | -- |
+| | γ | 2,8752 | -- | -- |
+| **PSE** | Intercepto | 7,5058 | -- | -- |
+| | **log(PIB per capita)** | **-0,0042** | -- | -- |
+| | Orç. total exec. | 0,9268 | -- | -- |
+| | **log(Taxa aprov. legis.)** | **-0,0435** | -- | -- |
+| | log(Taxa exec. orç. disc.) | 0,2379 | -- | -- |
+| | log(Taxa min.) | 0,1230 | -- | -- |
+| | γ | 17,5475 | -- | -- |
+| **Cópula** | **φ** | **-0,0493** | -- | -- |
+
+*Abreviações: Orç. = orçamento; exec. = executado; disc. = discricionário; legis. = legislativa; min. = ministerial.*  
+:::
+
+:::{focus-on="cr-tab_mod4" scale-by="0.95"}
+| **Modelo 4**
+|
+| 1. BIC = 7.601;
+| 
+| 2. $\phi=-0,05$ implica em $\tau_{-0,05} = -0,03$, o que sugere independência;
+:::
+
+:::{focus-on="cr-tab_mod4" scale-by="0.95"}
+| 3. Este modelo teve matriz hessiana não invertível;
+|
+| 4. As covariáveis log do *número de servidores* para a PNAB e log do *PIB per capita* para o PSE mudaram de sinal;
+|
+| 5. Para o PSE, $\gamma = 17,5$, o que indica que a função de risco desta marginal possui crescimento muito acelerado.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+```{r ajuste_mod4, message=F, warning=F, cache=T, include=F}
+## Modelo 4 ----
+
+ajust1 = survreg(data = df_pnab, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(log(ORC_TOTAL_EMPENHADO)) +
+                   scale(DISCR_TX) + scale(log(SERVIDORES))
+                 
+                 
+                 ,
+                 dist = 'weibull')
+# summary(ajust1); c(AIC(ajust1), AICc(ajust1), BIC(ajust1))
+# vif(ajust1); check_multicol_survreg(ajust1)
+
+ajust2 = survreg(data = df_pse, Surv(time = t, event = ADOPT) ~
+                   scale(log(PIB)) + scale(ORC_TOTAL_EMPENHADO) +
+                   scale(log(TX_SUCESSO)) + scale(log(DISCR_TX)) +
+                   scale(log(INDICE_MNST))
+                 
+                 
+                 ,
+                 dist = 'weibull')
+# summary(ajust2); c(AIC(ajust2), AICc(ajust2), BIC(ajust2))
+# vif(ajust2); check_multicol_survreg(ajust2)
+
+#(valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, .15))
+
+vero_cop_debug = function(para) {
+  cat("Parâmetros:", round(para, 6), "\n")
+  
+  qtd_par = length(para)
+  if ( length(ajust1$coefficients) == length(ajust2$coefficients) ){
+    if (qtd_par==7){ # 1 cov
+      b01 = para[1]; b11 = para[2]; gama1 = para[3];
+      b02 = para[4]; b12 = para[5]; gama2 = para[6];
+      theta = para[7]
+    } else if(qtd_par==9){ # 2 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; gama1 = para[4];
+      b02 = para[5]; b12 = para[6]; b22 = para[7]; gama2 = para[8];
+      theta = para[9]
+    } else if(qtd_par==11){ # 3 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; gama1 = para[5];
+      b02 = para[6]; b12 = para[7]; b22 = para[8]; b32 = para[9]; gama2 = para[10];
+      theta = para[11]
+    } else if(qtd_par==13){ # 4 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; gama1 = para[6];
+      b02 = para[7]; b12 = para[8]; b22 = para[9]; b32 = para[10]; b42 = para[11]; gama2 = para[12];
+      theta = para[13]
+    } else if(qtd_par==15){ # 5 covs
+      b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; b51 = para[6]; gama1 = para[7];
+      b02 = para[8]; b12 = para[9]; b22 = para[10]; b32 = para[11]; b42 = para[12]; b52 = para[13]; gama2 = para[14];
+      theta = para[15]
+    }
+  } else { # nums de covs diferentes
+    b01 = para[1]; b11 = para[2]; b21 = para[3]; b31 = para[4]; b41 = para[5]; gama1 = para[6];
+    b02 = para[7]; b12 = para[8]; b22 = para[9]; b32 = para[10]; b42 = para[11]; b52 = para[12]; gama2 = para[13];
+    theta = para[14]
+  }
+  
+  
+  if (gama1 <= 0 | gama2 <= 0) {
+    cat("Gama não positivo:", gama1, gama2, "\n")
+    return(1e10)
+  }
+  
+  alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) +
+                b31 * scale(df_pnab$DISCR_TX) + b41 * scale(log(df_pnab$SERVIDORES)) )
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) + b21 * scale(log(df_pnab$ORC_TOTAL_EMPENHADO)) +
+  #               b31 * scale(df_pnab$DISCR_TX) + b41 * scale(log(df_pnab$SERVIDORES)) )
+  #               #b51 * df_pnab$ANO_ELEITORAL_MUNIC)
+  # alfa1 = exp(b01 + b11 * scale(log(df_pnab$PIB)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) )
+  alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(df_pse$ORC_TOTAL_EMPENHADO) +
+                b32 * scale(log(df_pse$TX_SUCESSO)) + b42 * scale(log(df_pse$DISCR_TX)) +
+                b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa2 = exp(b02 + b12 * scale(log(df_pse$PIB)) + b22 * scale(log(df_pse$ORC_TOTAL_EMPENHADO)) +
+  #               b32 * scale(log(df_pse$TX_SUCESSO)) + b42 * scale(log(df_pse$DISCR_TX)) +
+  #               b52 * scale(log(df_pse$INDICE_MNST)) )
+  # alfa = exp( b0 + b1*scale(df_pse$TX_VETO) + b2*df_pse$CARREIRAS +
+  #               b3*scale(log(df_pse$DISCR_DOTACAO))+ b4*scale(df_pse$PIB))
+  
+  if ( any(!is.finite(alfa1)) || any(alfa1 <= 0) || any(!is.finite(alfa2)) || any(alfa2 <= 0) ) {
+    cat("Alfa inválido\n")
+    return(1e10)
+  }
+  
+  log_vero_S = log_S_cop(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t1 = log_parc_t1(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_parc_t2 = log_parc_t2(alfa1, gama1, alfa2, gama2, theta)
+  log_vero_f = log_f_cop(alfa1, gama1, alfa2, gama2, theta)
+  
+  result <- -sum(log_vero_S, log_vero_parc_t1, log_vero_parc_t2, log_vero_f)
+  
+  # cat("log_vero_S", sum(log_vero_S), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t1), '\n')
+  # cat("log_vero_parc_t1", sum(log_vero_parc_t2), '\n')
+  # cat("log_vero_f", sum(log_vero_f), '\n')
+  
+  cat("Resultado:", ifelse(is.finite(result), round(result, 4), "Não finito"), "\n\n")
+  
+  if (!is.finite(result)) {
+    return(1e10)
+  }
+  
+  return(result)
+}
+
+valorin1<-c(ajust1$coefficients, 1/ajust1$scale, ajust2$coefficients, 1/ajust2$scale, 0.1)
+# nlminb é geralmente mais robusto que optim para problemas com bounds
+MLE_nlminb <- nlminb(start = valorin1,
+                     objective = vero_cop_debug,
+                     # lower = c(rep(-Inf, 10), 0.00248),
+                     # upper = c(100, 10, 100, 100, 10, 100, 4, 2),
+                     control = list(iter.max = 2000, eval.max = 2000))
+# tau = MLE_nlminb[["par"]][[length(valorin1)]] / (2+MLE_nlminb[["par"]][[length(valorin1)]])
+# log_lik = -MLE_nlminb$objective; k = length(MLE_nlminb$par); n_observacoes = nrow(df_pnab)
+# aic = 2 * k - 2 * log_lik; aicc = aic + (2 * k * (k + 1)) / (n_observacoes - k - 1); bic = log(n_observacoes) * k - 2 * log_lik
+# print(MLE_nlminb); paste0('tau: ', round(tau, 4) )
+# paste0("AIC: ", round(aic, 3), "; AICc: ", round(aicc, 3), "; BIC: ", round(bic, 3), "; Vero: ", round(log_lik, 3) )
+
+
+S_cop_estim = function(t1, t2, cov11, cov21, cov31, cov41, cov12, cov22, cov32, cov42, cov52,
+                       b01, b11, b21, b31, b41, gama1, b02, b12, b22, b32, b42, b52, gama2, theta){
+  alfa1 = exp(b01 + b11*cov11 + b21*cov21 + b31*cov31 + b41*cov41)
+  alfa2 = exp(b02 + b12*cov12 + b22*cov22 + b32*cov32 + b42*cov42 + b52*cov52)
+  (S_theta(t1, alfa1, gama1, theta) + S_theta(t2, alfa2, gama2, theta) - 1) ^(-1/theta)
+}
+# Definir a função f(x,y) com os parâmetros fixos
+f <- function(x, y) {
+  S_cop_estim(x, y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+              MLE_nlminb$par[1], MLE_nlminb$par[2], MLE_nlminb$par[3], 
+              MLE_nlminb$par[4], MLE_nlminb$par[5], MLE_nlminb$par[6],
+              MLE_nlminb$par[7], MLE_nlminb$par[8], MLE_nlminb$par[9], 
+              MLE_nlminb$par[10], MLE_nlminb$par[11], MLE_nlminb$par[12],
+              MLE_nlminb$par[13], MLE_nlminb$par[14])
+}
+
+
+# Criar sequências de valores de 0 a 6000
+x <- seq(0, 2800, length.out = 30)
+y <- seq(0, 2500, length.out = 30)
+# Calcular a matriz z
+z <- outer(x, y, f); z[is.na(z)] <- 0
+```
+
+::: {#cr-sup_mod4}
+```{r superficie_mod4, message=F, warning=F, cache=T}
+library(plotly)
+plot_ly() %>%
+  add_surface(x = ~x, y = ~y, z = ~t(z), 
+              colorscale = list(c(0, 1), c("#caf4fc", "#1a074a")),
+    hovertemplate = paste(
+      "PNAB: %{x:.4f}<br>",
+      "PSE: %{y:.4f}<br>",
+      "S: %{z:.4f}<br>",
+      "<extra></extra>"  # Remove a informação extra (x, y, z)
+    ),
+    hoverinfo = 'text'
+              ) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "Tempos PNAB"),
+      yaxis = list(title = "Tempos PSE"), 
+      zaxis = list(title = "S(t<sub>1</sub>,t<sub>2</sub>)"),
+      camera = list(eye = list(x = 1.5, y = 1.5, z = 1.5))
+    ),
+    title = list(
+      text = "Superfície do Modelo 4",
+      x = 0.5,  # Centralizado
+      font = list(size = 16)
+    )
+  )
+```
+:::
+
+:::{focus-on="cr-sup_mod4" scale-by="1.15"}
+Superfície formada pelo **Modelo 4** quando todas as variáveis explicativas são iguais a sua média.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-right"}
+
+::: {#cr-mod4_residuos}
+![](imagens/res_mod4.png)
+:::
+
+:::{focus-on="cr-mod4_residuos" scale-by="1.0"}
+| Resíduos de Cox-Snell para o Modelo 4.
+:::
+
+:::
+
+
+
+:::{.cr-section layout="sidebar-left"}
+
+::: {#cr-conclusoes style="font-size: 1.5em; font-family: 'Roboto', sans-serif;"}
+| - Parece existir uma relação linear entre o BIC e o $\phi$ dos modelos bivariados;
+| 
+| - Os modelos com menor BIC não indicaram correlação entre os tempos da PNAB e PSE;
+| 
+| - O $\phi$ é muito sensível a escolha das covariáveis;
+| 
+| - Não necessariamente modelos com menor BIC são os mais indicados.
+:::
+
+:::{focus-on="cr-conclusoes" scale-by="1"}
+**Conclusões:**
+:::
+
+:::
+
+
+
+:::{.cr-section layout="center"}
+
+::: {#cr-ref style="font-size: 1.0em; font-family: 'Roboto', sans-serif;"}
+| BRASIL. Decreto nº 6.286, de 5 de dezembro de 2007. 2007. Institui o Programa Saúde na Escola (PSE). Diário Oficial da União, Brasília, DF, 6 dez. 2007.
+| 
+| BRASIL. Portaria nº 2.436, de 21 de setembro de 2017: Aprova a política nacional de atenção básica. 2017. Diário Oficial da União, Brasília, DF, 22 set. 2017.
+| 
+| CAMOLEZ, J. P. Modelo de regressão bivariado via cópulas para dados discretos e censurados. Dissertação (Dissertação de Mestrado) — Universidade de Brasília, Brasília, DF, 2018.
+| 
+| CARVALHO, M. S. et al. Análise de sobrevivência: teoria e aplicações em saúde. 2ª ed. rev. ampl. ed. Editora FIOCRUZ, 2011. ISBN 9788575412169. Disponível em: https://books.scielo.org/id/xqkmm
+|
+| COLOSIMO, E. A.; GIOLO, S. R. Análise de Sobrevivência Aplicada. 2. ed. [S.l.]: Blucher, 2024.
+| 
+| COÊLHO, D. B.; CAVALCANTE, P.; TURGEON, M. Mecanismos de difusão de políticas sociais no Brasil: uma análise do programa saúde da família. Revista de Sociologia e Política, Universidade Federal do Paraná, v. 24, n. 58, p. 145–165, Jun 2016. ISSN 0104-4478. Disponível em: ⟨https://doi.org/10.1590/1678-987316245807⟩.
+| 
+| FACHINI, J. B. Modelos de regressão com e sem fração de cura para dados bivariados em análise de sobrevivência. Piracicaba: USP, 2009.
+| 
+| GOMES, E. M. d. C. Análise de sensibilidade e resíduos em modelos de regressão com respostas bivariadas por meio de cópulas. Piracicaba: USP, 2007.
+| 
+| PEREIRA, C. DA POLÍTICA ÀS POLÍTICAS: o que faz com que os programas federais cheguem à ponta? Tese (Doutorado) — Universidade de Brasília, Brasília, DF, 2025.
+|
+| SANTOS, D. F. d. Modelo de regressão log-logístico discreto com fração de cura para dados de sobrevivência. Dissertação (Dissertação de Mestrado) — Universidade de Brasília, Brasília, DF, 2017. Disponível em: http://repositorio2.unb.br/bitstream/10482/31450/1/2017_Dami%C3%A3oFl%C3%A1viodosSantos.pdf
+| 
+| VIEIRA, N. O. Estudo da adesão de políticas públicas da área de infraestrutura por municípios brasileiros via análise de sobrevivência. Brasília, DF, 2025.
+:::
+
+:::{focus-on="cr-ref" scale-by="1"}
+Referências
+:::
+
+:::
